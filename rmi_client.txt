@@ -1,0 +1,15 @@
+import Pyro4
+
+# Locate the Pyro Name Server
+name_server = Pyro4.locateNS()
+
+# Obtain a proxy for the Calculator object
+calculator_uri = name_server.lookup("example.Calculator")
+calculator = Pyro4.Proxy(calculator_uri)
+
+# Call remote methods via RMI
+result_add = calculator.add(10, 5)
+print("Result of add operation:", result_add)
+
+result_subtract = calculator.subtract(10, 5)
+print("Result of subtract operation:", result_subtract)

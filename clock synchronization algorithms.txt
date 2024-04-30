@@ -1,0 +1,39 @@
+import time
+import threading
+import random
+
+class ClockSynchronizer:
+    def __init__(self, server_offset=0):
+        self.server_offset = server_offset
+        self.client_offset = 0
+
+    def synchronize(self):
+        # Simulate network delay
+        time.sleep(random.uniform(0.1, 0.5))
+        server_time = time.time() + self.server_offset
+        self.client_offset = server_time - time.time()
+        print(f"Client's clock synchronized. Offset: {self.client_offset} seconds.")
+
+    def run(self):
+        while True:
+            self.synchronize()
+            time.sleep(random.uniform(5, 10))  # Synchronize every 5 to 10 seconds
+
+# Example usage
+server_offset = 5  # Simulate server clock offset of 5 seconds ahead
+synchronizer = ClockSynchronizer(server_offset)
+
+# Start the clock synchronization thread
+synchronization_thread = threading.Thread(target=synchronizer.run)
+synchronization_thread.start()
+
+# Simulate some client activities
+def client_activity(synchronizer):
+    while True:
+        time.sleep(random.uniform(1, 3))
+        current_time = time.time() + synchronizer.client_offset
+        print(f"Current client time: {current_time}")
+
+# Start the client activity thread
+client_thread = threading.Thread(target=client_activity, args=(synchronizer,))
+client_thread.start()

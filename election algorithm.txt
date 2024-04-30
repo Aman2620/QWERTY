@@ -1,0 +1,57 @@
+import time
+import threading
+import random
+
+class BullyElection:
+    def __init__(self, process_id, num_processes):
+        self.process_id = process_id
+        self.num_processes = num_processes
+        self.coordinator_id = None
+        self.election_in_progress = False
+
+    def start_election(self):
+        self.election_in_progress = True
+        print(f"Process {self.process_id} starts election.")
+        higher_processes = [p_id for p_id in range(self.process_id + 1, self.num_processes)]
+        for higher_process_id in higher_processes:
+            thread = threading.Thread(target=self.send_election_message, args=(higher_process_id,))
+            thread.start()
+
+        time.sleep(2)  # Wait for replies
+        if not self.coordinator_id:
+            self.coordinator_id = self.process_id
+            print(f"Process {self.process_id} becomes the coordinator.")
+            for p_id in range(self.process_id + 1, self.num_processes):
+                thread = threading.Thread(target=self.send_coord_message, args=(p_id,))
+                thread.start()
+
+        self.election_in_progress = False
+
+    def send_election_message(self, target_process_id):
+        print(f"Process {self.process_id} sends election message to Process {target_process_id}")
+        # Simulate network delay
+        time.sleep(random.uniform(0.1, 0.5))
+        if target_process_id > self.process_id:
+            # Simulate reply from higher process
+            print(f"Process {target_process_id} acknowledges election message.")
+            self.coordinator_id = None  # Reset coordinator in case of a higher process acknowledging
+
+    def send_coord_message(self, target_process_id):
+        print(f"Process {self.process_id} sends coordinator message to Process {target_process_id}")
+        # Simulate network delay
+        time.sleep(random.uniform(0.1, 0.5))
+
+    def simulate(self):
+        while True:
+            if not self.election_in_progress:
+                time.sleep(random.uniform(5, 10))
+                self.start_election()
+
+# Example usage
+num_processes = 5
+process_id = 2  # ID of the current process (0 to num_processes-1)
+election = BullyElection(process_id, num_processes)
+
+# Start the election simulation
+election_thread = threading.Thread(target=election.simulate)
+election_thread.start()

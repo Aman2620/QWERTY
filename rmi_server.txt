@@ -1,0 +1,15 @@
+import Pyro4
+
+class Calculator(object):
+    def add(self, x, y):
+        return x + y
+
+    def subtract(self, x, y):
+        return x - y
+
+# Register the Calculator class as a Pyro object
+Pyro4.Daemon.serveSimple(
+    {
+        Calculator: "example.Calculator"
+    },
+    ns = True)

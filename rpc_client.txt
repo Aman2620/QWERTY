@@ -1,0 +1,11 @@
+import xmlrpc.client
+
+# Create an XML-RPC client proxy
+proxy = xmlrpc.client.ServerProxy("http://localhost:8000/")
+
+# Call remote functions via RPC
+result_add = proxy.add(10, 5)
+print("Result of add operation:", result_add)
+
+result_subtract = proxy.subtract(10, 5)
+print("Result of subtract operation:", result_subtract)

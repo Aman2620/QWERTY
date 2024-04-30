@@ -1,0 +1,23 @@
+class RoundRobinLoadBalancer:
+    def __init__(self, servers):
+        self.servers = servers
+        self.current_index = 0
+
+    def get_next_server(self):
+        server = self.servers[self.current_index]
+        self.current_index = (self.current_index + 1) % len(self.servers)
+        return server
+
+# Example usage
+initial_processes = ["Process1", "Process2", "Process3", "Process4", "Process5"]
+servers = ["Server1", "Server2", "Server3"]
+load_balancer = RoundRobinLoadBalancer(servers)
+
+print("Processes before balancing:")
+for process in initial_processes:
+    print(process)
+
+print("\nProcesses after balancing:")
+for process in initial_processes:
+    server = load_balancer.get_next_server()
+    print(f"{process} routed to {server}")
